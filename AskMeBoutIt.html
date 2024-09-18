@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Me 'Bout It</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #2d2d2d;
+        }
+        .container {
+            margin-top: 100px;
+        }
+        h1 {
+            color: #ffffff;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+        }
+        input[type="button"] {
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: rgb(2, 2, 2);
+            border: none;
+            cursor: pointer;
+        }
+        input[type="button"]:hover {
+            background-color: #9d9d9d;
+        }
+        .answer {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ask Me 'Bout It</h1>
+        <input type="text" id="question" placeholder="Ask a question..." required>
+        <input type="button" value="Let fate decide!" onclick="getAnswer()">
+        <div class="answer" id="answer"></div>
+    </div>
+
+    <script>
+        // Array of possible Magic 8 Ball responses
+        const responses = [
+            "It is certain.",
+            "It is decidedly so.",
+            "Hailey secretly thinks YES!",
+            "Ask yourself: Would an idiot do that?",
+            "You may rely on it.",
+            "As I see it, yes.",
+            "Most likely.",
+            "Outlook good.",
+            "Yes.",
+            "Signs point to yes.",
+            "Yes!",
+            "No!",
+            "If its a week day, no. If its a weekend, yes.",
+            "Ask the wifey.",
+            "Kiss Hailey 'bout it.",
+            "If you do, something bad will happen. (dun dun dunnnn)",
+            "Jaxon says no.",
+            "Don't ask me, ask Carrie.",
+            "What would Charity do?",
+            "I'm a website, not a pychic."
+        ];
+
+        // Function to generate a random answer
+        function getAnswer() {
+            const question = document.getElementById("question").value;
+            if (question) {
+                const randomIndex = Math.floor(Math.random() * responses.length);
+                const answer = responses[randomIndex];
+                document.getElementById("answer").innerHTML = `<p>Fate says: <strong>${answer}</strong></p>`;
+            } else {
+                document.getElementById("answer").innerHTML = `<p>Please ask a question!</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
