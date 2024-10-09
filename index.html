@@ -9,31 +9,41 @@
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #2d2d2d;
+            margin: 0;
+            padding: 0;
         }
         .container {
-            margin-top: 100px;
+            margin: 10% auto; /* Adjusts for mobile spacing */
+            max-width: 600px; /* Limits the width on larger screens */
         }
         h1 {
             color: #ffffff;
+            font-size: 2em; /* Responsive font size */
         }
         input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            width: 300px;
+            padding: 12px; /* Increased padding for easier interaction */
+            font-size: 1.2em; /* Responsive font size */
+            width: 90%; /* Responsive width */
+            max-width: 300px; /* Limits maximum width for larger screens */
+            border: 1px solid #ccc; /* Adds a border for better visibility */
+            border-radius: 5px; /* Rounds the corners */
         }
         input[type="button"] {
-            padding: 10px 20px;
+            padding: 12px 25px; /* Increased padding for better touch target */
             background-color: #ffffff;
             color: rgb(2, 2, 2);
             border: none;
+            border-radius: 5px; /* Rounds the corners */
             cursor: pointer;
+            font-size: 1.2em; /* Responsive font size */
+            margin-top: 10px; /* Adds space between elements */
         }
         input[type="button"]:hover {
             background-color: #9d9d9d;
         }
         .answer {
             margin-top: 20px;
-            font-size: 24px;
+            font-size: 1.5em; /* Responsive font size */
             color: #ffffff;
         }
     </style>
@@ -61,7 +71,7 @@
             "Yes.",
             "Signs point to yes.",
             "No!",
-            "If its a week day, no. If its a weekend, yes.",
+            "If it's a weekday, no. If it's a weekend, yes.",
             "If you do, something bad will happen. (dun dun dunnnn)",
             "Jaxon says no.",
             "Don't ask me, ask Carrie.",
@@ -82,17 +92,29 @@
             "The answer is yes, but you didn't hear it from me",
             "Only if you're cool with plot twists",
             "Yes, but you'll wish it was no. You have been warned.",
-            "Yes, if its a sunny day :)",
-            "Yes, if its cloudy outside"
+            "Yes, if it's a sunny day :)",
+            "Yes, if it's cloudy outside"
         ];
+
+        // Array to store previously asked questions
+        const askedQuestions = [];
 
         // Function to generate a random answer
         function getAnswer() {
-            const question = document.getElementById("question").value;
+            const question = document.getElementById("question").value.trim();
+
             if (question) {
-                const randomIndex = Math.floor(Math.random() * responses.length);
-                const answer = responses[randomIndex];
-                document.getElementById("answer").innerHTML = `<p>Fate says: <strong>${answer}</strong></p>`;
+                // Check if the question has already been asked
+                if (askedQuestions.includes(question)) {
+                    document.getElementById("answer").innerHTML = `<p>You already asked that! Try something new.</p>`;
+                } else {
+                    const randomIndex = Math.floor(Math.random() * responses.length);
+                    const answer = responses[randomIndex];
+                    document.getElementById("answer").innerHTML = `<p>Fate says: <strong>${answer}</strong></p>`;
+
+                    // Add the question to the askedQuestions array
+                    askedQuestions.push(question);
+                }
             } else {
                 document.getElementById("answer").innerHTML = `<p>Please ask a question!</p>`;
             }
