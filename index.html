@@ -1,124 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ask Me 'Bout It</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #2d2d2d;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            margin: 10% auto; /* Adjusts for mobile spacing */
-            max-width: 600px; /* Limits the width on larger screens */
-        }
-        h1 {
-            color: #ffffff;
-            font-size: 2em; /* Responsive font size */
-        }
-        input[type="text"] {
-            padding: 12px; /* Increased padding for easier interaction */
-            font-size: 1.2em; /* Responsive font size */
-            width: 90%; /* Responsive width */
-            max-width: 300px; /* Limits maximum width for larger screens */
-            border: 1px solid #ccc; /* Adds a border for better visibility */
-            border-radius: 5px; /* Rounds the corners */
-        }
-        input[type="button"] {
-            padding: 12px 25px; /* Increased padding for better touch target */
-            background-color: #ffffff;
-            color: rgb(2, 2, 2);
-            border: none;
-            border-radius: 5px; /* Rounds the corners */
-            cursor: pointer;
-            font-size: 1.2em; /* Responsive font size */
-            margin-top: 10px; /* Adds space between elements */
-        }
-        input[type="button"]:hover {
-            background-color: #9d9d9d;
-        }
-        .answer {
-            margin-top: 20px;
-            font-size: 1.5em; /* Responsive font size */
-            color: #ffffff;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask Me 'Bout It</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #2d2d2d;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    margin: 5% auto;
+    max-width: 600px;
+}
+
+/* 8 BALL WRAPPER */
+.ball-container {
+    position: relative;
+    width: 400px;   /* was ~300px → increase this */
+    margin: 40px auto;
+}
+
+/* IMAGE */
+.ball-container img {
+    width: 100%;
+    display: block;
+}
+
+/* TEXT INSIDE TRIANGLE */
+.ball-text {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    width: 160px;   /* bigger */
+    height: 130px;  /* bigger */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    color: white;
+    font-weight: bold;
+
+    font-size: 18px;
+    line-height: 1.2;
+
+    padding: 8px;
+
+    text-shadow: 0 0 10px rgba(255,255,255,0.9);
+}
+
+h1 {
+    color: white;
+}
+
+input[type="text"] {
+    padding: 12px;
+    font-size: 1.2em;
+    width: 90%;
+    max-width: 300px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+input[type="button"] {
+    padding: 12px 25px;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+input[type="button"]:hover {
+    background-color: #9d9d9d;
+}
+@keyframes fadeInBall {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.6);
+        filter: blur(6px);
+    }
+    60% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.05);
+        filter: blur(0);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.ball-text.show {
+    animation: fadeInBall 1.2s ease-out;  /* was 0.6s → now slower */
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Ask Me 'Bout It</h1>
-        <input type="text" id="question" placeholder="Ask a question..." required>
-        <br>
-        <input type="button" value="Let fate decide!" onclick="getAnswer()">
-        <div class="answer" id="answer"></div>
+
+<div class="container">
+    <h1>Ask Me 'Bout It</h1>
+
+    <input type="text" id="question" placeholder="Ask a question...">
+    <br>
+    <input type="button" value="Let fate decide!" onclick="getAnswer()">
+
+    <!-- 8 BALL -->
+    <div class="ball-container">
+        <img src="images/ChatGPT Image Apr 20, 2026, 09_14_26 AM.png" alt="Magic 8 Ball">
+
+        <!-- TEXT OVERLAY -->
+        <div class="ball-text" id="ballText"></div>
     </div>
+</div>
 
-    <script>
-        // Array of possible Magic 8 Ball responses
-        const responses = [
-            "It is certain.",
-            "It is decidedly so.",
-            "Hailey secretly thinks YES!",
-            "Ask yourself: Would an idiot do that?",
-            "You may rely on it.",
-            "As I see it, yes.",
-            "Most likely.",
-            "Outlook good.",
-            "Yes.",
-            "Signs point to yes.",
-            "No!",
-            "If it's a weekday, no. If it's a weekend, yes.",
-            "If you do, something bad will happen. (dun dun dunnnn)",
-            "Jaxon says no.",
-            "Don't ask me, ask Carrie.",
-            "What would Charity do?",
-            "I'm rolling my eyes, but yes.",
-            "Consider therapy instead. NO!",
-            "You're kidding, right?",
-            "Sure, if you like surprises",
-            "Why would you even ask that?",
-            "Definitely",
-            "100%",
-            "In your dreams, pal",
-            "Only if you do 10 pushups first",
-            "Only on one condition: kisses",
-            "Only if you stop asking stupid questions",
-            "Yes, but keep it a secret.",
-            "Let's pretend you didn't ask that",
-            "The answer is yes, but you didn't hear it from me",
-            "Only if you're cool with plot twists",
-            "Yes, but you'll wish it was no. You have been warned.",
-            "Yes, if it's a sunny day :)",
-            "Yes, if it's cloudy outside"
-        ];
+<script>
+const responses = [
+    "It is certain.",
+    "It is decidedly so.",
+    "Hailey secretly thinks YES!",
+    "Ask yourself: Would an idiot do that?",
+    "You may rely on it.",
+    "As I see it, yes.",
+    "Most likely.",
+    "Outlook good.",
+    "Yes.",
+    "Signs point to yes.",
+    "No!",
+    "If it's a weekday, no. If it's a weekend, yes.",
+    "If you do, something bad will happen.",
+    "Jaxon says no.",
+    "Don't ask me, ask Carrie.",
+    "What would Charity do?",
+    "Definitely",
+    "100%",
+    "In your dreams, pal",
+    "Only if you do 10 pushups first"
+];
 
-        // Array to store previously asked questions
-        const askedQuestions = [];
+const askedQuestions = [];
 
-        // Function to generate a random answer
-        function getAnswer() {
-            const question = document.getElementById("question").value.trim();
+function getAnswer() {
+    const question = document.getElementById("question").value.trim();
+    const ballText = document.getElementById("ballText");
 
-            if (question) {
-                // Check if the question has already been asked
-                if (askedQuestions.includes(question)) {
-                    document.getElementById("answer").innerHTML = `<p>You already asked that! Try something new.</p>`;
-                } else {
-                    const randomIndex = Math.floor(Math.random() * responses.length);
-                    const answer = responses[randomIndex];
-                    document.getElementById("answer").innerHTML = `<p>Fate says: <strong>${answer}</strong></p>`;
+    if (!question) {
+        setBallText("Ask a question!");
+        return;
+    }
 
-                    // Add the question to the askedQuestions array
-                    askedQuestions.push(question);
-                }
-            } else {
-                document.getElementById("answer").innerHTML = `<p>Please ask a question!</p>`;
-            }
-        }
-    </script>
+    if (askedQuestions.includes(question)) {
+        setBallText("You already asked that!");
+        return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * responses.length);
+    const answer = responses[randomIndex];
+
+    setBallText(answer);
+    askedQuestions.push(question);
+}
+function setBallText(text) {
+    const el = document.getElementById("ballText");
+
+    el.innerHTML = text;
+
+    // reset animation
+    el.classList.remove("show");
+    void el.offsetWidth; // force reflow
+    el.classList.add("show");
+
+    // dynamic font sizing
+    let size = 18;
+    el.style.fontSize = size + "px";
+
+    // shrink until it fits inside the box
+    while (
+        (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth) &&
+        size > 10
+    ) {
+        size--;
+        el.style.fontSize = size + "px";
+    }
+}
+</script>
+
 </body>
 </html>
