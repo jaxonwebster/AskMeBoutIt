@@ -41,6 +41,7 @@ function getAnswer() {
     const randomIndex = Math.floor(Math.random() * responses.length);
     const answer = responses[randomIndex];
 
+    // hide + shake
     ballText.style.opacity = 0;
     ball.classList.add("shake");
 
@@ -51,8 +52,6 @@ function getAnswer() {
     }, 800);
 
     askedQuestions.push(question);
-
-    // clear input
     document.getElementById("question").value = "";
 }
 
@@ -61,23 +60,19 @@ function setBallText(text) {
 
     el.innerHTML = text;
 
-    // reset animation
     el.classList.remove("show");
     void el.offsetWidth;
     el.classList.add("show");
 
-    // start large
-    let size = 22;
+    let size = 20;
     el.style.fontSize = size + "px";
 
-    // shrink until it fits height
-    while (el.scrollHeight > el.clientHeight && size > 10) {
+    while (
+        (el.scrollHeight > el.clientHeight ||
+         el.scrollWidth > el.clientWidth) &&
+        size > 10
+    ) {
         size--;
         el.style.fontSize = size + "px";
-    }
-
-    // EXTRA: shrink more if text is long (triangle safety)
-    if (text.length > 50) {
-        el.style.fontSize = (size - 2) + "px";
     }
 }
