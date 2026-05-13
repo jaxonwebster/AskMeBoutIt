@@ -1,31 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ask Me 'Bout It</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Oracle - Magic 8 Ball</title>
+    <style>
+        :root {
+            --bg-color: #2c2c2e;
+            --ball-base: #0a0a0a;
+            --liquid-blue: #001144;
+            --triangle-blue: #0033ff;
+            --text-color: rgba(255, 255, 255, 0.9);
+        }
 
-<link rel="stylesheet" href="styles.css">
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at center, #4a4a4c 0%, #1c1c1e 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            letter-spacing: -1px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* UI Controls */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+            z-index: 10;
+        }
+
+        input[type="text"] {
+            padding: 14px 24px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 1rem;
+            width: 280px;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input[type="text"]:focus {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--triangle-blue);
+        }
+
+        /* MATTE BUTTON STYLING */
+        button {
+            padding: 14px 28px;
+            border-radius: 30px;
+            border: none;
+            background: #3b82f6; /* Solid matte blue */
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            box-shadow: none; /* Removed the glow */
+        }
+
+        button:hover {
+            background-color: #2563eb; /* Slightly darker matte blue on hover */
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+            background-color: #1d4ed8;
+        }
+
+        /* THE BALL */
+        .ball-stage {
+            position: relative;
+            width: 420px;
+            height: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .eight-ball {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle at 35% 35%, #444 0%, #000 60%);
+            border-radius: 50%;
+            box-shadow: 
+                inset -20px -20px 60px rgba(0,0,0,0.8),
+                10px 40px 60px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        /* THE ICONIC LOGO */
+        .iconic-eight {
+            position: absolute;
+            top: 4%; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 100px; 
+            height: 100px; 
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            pointer-events: none;
+        }
+
+        .iconic-eight span {
+            color: black;
+            font-size: 60px; 
+            font-weight: 900;
+            font-family: "Arial Black", sans-serif;
+            line-height: 1;
+        }
+
+        /* THE WINDOW */
+        .answer-window {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, #05051a 0%, #000 100%);
+            border: 12px solid #1a1a1a;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 30px rgba(0,0,0,1);
+            margin-top: 30px; 
+        }
+
+        /* THE LIQUID/TRIANGLE */
+        .triangle-container {
+            width: 130px;
+            height: 110px;
+            background-color: var(--triangle-blue);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 22px;
+            box-sizing: border-box;
+            opacity: 0;
+            filter: blur(8px);
+            transition: opacity 1s, filter 1.5s;
+        }
+
+        .answer-text {
+            width: 80px;
+            color: rgba(255,255,255,0.85);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.2;
+            letter-spacing: 0.5px;
+            user-select: none;
+        }
+
+        /* ANIMATIONS */
+        .shaking {
+            animation: shake 0.6s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(2px, 2px) rotate(0deg); }
+            25% { transform: translate(-3px, -1px) rotate(-2deg); }
+            50% { transform: translate(-1px, 2px) rotate(1deg); }
+            75% { transform: translate(3px, 1px) rotate(-1deg); }
+            100% { transform: translate(2px, 2px) rotate(0deg); }
+        }
+
+        .reveal {
+            opacity: 1 !important;
+            filter: blur(0) !important;
+            animation: floatUp 2s forwards ease-out;
+        }
+
+        @keyframes floatUp {
+            0% { transform: scale(0.85) translateY(15px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        /* Message Box */
+        #msg-box {
+            position: fixed;
+            bottom: 30px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
-    <h1>Ask Me 'Bout It</h1>
-
-    <input type="text" id="question" placeholder="Ask a question...">
-    <br>
-    <input type="button" value="Let fate decide!" onclick="getAnswer()">
-
-    <div class="ball-container">
-        <img src="images/8ball.png" alt="Magic 8 Ball">
-
-        <!-- SVG TEXT INSIDE TRIANGLE -->
-       <div class="ball-text" id="ballText"></div>
+    <div class="header">
+        <h1>Webster's Wise-Ball</h1>
+        <p style="opacity: 0.6;">Let the Webster spirits decide.</p>
     </div>
-</div>
 
-<script src="script.js"></script>
+    <div class="controls">
+        <input type="text" id="questionInput" placeholder="Ask a yes/no question..." maxlength="100">
+        <button onclick="shakeBall()">What say Webster?</button>
+    </div>
 
+    <div class="ball-stage">
+        <div class="eight-ball" id="ball" onclick="shakeBall()">
+            <!-- The iconic white circle with the 8 -->
+            <div class="iconic-eight">
+                <span>W</span>
+            </div>
+
+            <!-- The answer window -->
+            <div class="answer-window">
+                <div class="triangle-container" id="triangle">
+                    <div class="answer-text" id="answer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="msg-box">Please type a question first!</div>
+
+    <script>
+        const responses = [
+    /* The "Yes" Vibes */
+    "Hailey<br>says YES",
+    "100%<br>Webster approved",
+    "Jaxon thinks<br>it's a go",
+    "Dallin is<br>on board",
+    "It is<br>decidedly so",
+    "Yes",
+
+    /* The "Humorous/Sassy" Vibes */
+    "Only<br> if you<br>pay Jaxon $5",
+    "If it's a<br>weekend, yes",
+    "In your<br>dreams, pal",
+
+    /* The "No/Doubtful" Vibes */
+    "Dallin says<br> no",
+    "No",
+    "Don't bet<br>on it",
+    "The W <br>stands<br>for Wrong",
+    "Prolly not",
+];
+
+        let isShaking = false;
+
+        function showMessage(text) {
+            const box = document.getElementById('msg-box');
+            box.innerText = text;
+            box.style.opacity = '1';
+            setTimeout(() => box.style.opacity = '0', 3000);
+        }
+
+        function shakeBall() {
+            if (isShaking) return;
+
+            const input = document.getElementById('questionInput');
+            const ball = document.getElementById('ball');
+            const triangle = document.getElementById('triangle');
+            const answer = document.getElementById('answer');
+
+            if (!input.value.trim()) {
+                showMessage("Ask a question first!");
+                return;
+            }
+
+            isShaking = true;
+            
+            triangle.classList.remove('reveal');
+            ball.classList.add('shaking');
+            input.value = "";
+
+            setTimeout(() => {
+                ball.classList.remove('shaking');
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                answer.innerHTML = randomResponse;
+
+                setTimeout(() => {
+                    triangle.classList.add('reveal');
+                    isShaking = false;
+                }, 100);
+
+            }, 1000);
+        }
+
+        document.getElementById('questionInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                shakeBall();
+            }
+        });
+    </script>
 </body>
 </html>
