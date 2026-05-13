@@ -24,28 +24,33 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll on mobile */
         }
 
         .header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             z-index: 10;
+            padding: 0 10px;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 5vw, 2.5rem); /* Responsive font size */
             margin: 0;
             letter-spacing: -1px;
             text-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* UI Controls */
+        /* UI Controls - Responsive Flex */
         .controls {
             display: flex;
+            flex-wrap: wrap; /* Wraps on mobile */
+            justify-content: center;
             gap: 10px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             z-index: 10;
+            width: 90%;
+            max-width: 500px;
         }
 
         input[type="text"] {
@@ -55,7 +60,8 @@
             background: rgba(255,255,255,0.05);
             color: white;
             font-size: 1rem;
-            width: 280px;
+            width: 100%; /* Full width of container */
+            max-width: 280px;
             outline: none;
             transition: all 0.3s;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
@@ -66,34 +72,28 @@
             border-color: var(--triangle-blue);
         }
 
-        /* MATTE BUTTON STYLING */
         button {
             padding: 14px 28px;
             border-radius: 30px;
             border: none;
-            background: #3b82f6; /* Solid matte blue */
+            background: #3b82f6;
             color: white;
             font-weight: 700;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.2s;
-            box-shadow: none; /* Removed the glow */
+            box-shadow: none;
+            white-space: nowrap;
         }
 
-        button:hover {
-            background-color: #2563eb; /* Slightly darker matte blue on hover */
-            transform: translateY(-1px);
-        }
+        button:hover { background-color: #2563eb; transform: translateY(-1px); }
+        button:active { transform: translateY(0); background-color: #1d4ed8; }
 
-        button:active {
-            transform: translateY(0);
-            background-color: #1d4ed8;
-        }
-
-        /* THE BALL */
+        /* THE BALL - Responsive Scaling */
         .ball-stage {
             position: relative;
-            width: 420px;
-            height: 420px;
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 1 / 1;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -101,8 +101,10 @@
 
         .eight-ball {
             position: relative;
-            width: 380px;
-            height: 380px;
+            width: 90%; /* Scales based on screen width */
+            height: 90%;
+            max-width: 380px;
+            max-height: 380px;
             background: radial-gradient(circle at 35% 35%, #444 0%, #000 60%);
             border-radius: 50%;
             box-shadow: 
@@ -112,17 +114,15 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.1s;
         }
 
-        /* THE ICONIC LOGO */
         .iconic-eight {
             position: absolute;
-            top: 4%; 
+            top: 6%; 
             left: 50%; 
             transform: translateX(-50%);
-            width: 100px; 
-            height: 100px; 
+            width: 25%; /* Responsive circle size */
+            aspect-ratio: 1 / 1;
             background: white;
             border-radius: 50%;
             display: flex;
@@ -134,38 +134,36 @@
 
         .iconic-eight span {
             color: black;
-            font-size: 60px; 
+            font-size: clamp(30px, 8vw, 60px); /* Responsive number */
             font-weight: 900;
             font-family: "Arial Black", sans-serif;
             line-height: 1;
         }
 
-        /* THE WINDOW */
         .answer-window {
             position: relative;
-            width: 180px;
-            height: 180px;
+            width: 45%; /* Responsive window size */
+            aspect-ratio: 1 / 1;
             background: radial-gradient(circle, #05051a 0%, #000 100%);
-            border: 12px solid #1a1a1a;
+            border: 8px solid #1a1a1a;
             border-radius: 50%;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: inset 0 0 30px rgba(0,0,0,1);
-            margin-top: 30px; 
+            margin-top: 15%; 
         }
 
-        /* THE LIQUID/TRIANGLE */
         .triangle-container {
-            width: 130px;
-            height: 110px;
+            width: 75%;
+            height: 65%;
             background-color: var(--triangle-blue);
             clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            padding-bottom: 22px;
+            padding-bottom: 15%;
             box-sizing: border-box;
             opacity: 0;
             filter: blur(8px);
@@ -173,9 +171,9 @@
         }
 
         .answer-text {
-            width: 80px;
+            width: 70%;
             color: rgba(255,255,255,0.85);
-            font-size: 13px;
+            font-size: clamp(10px, 3vw, 13px);
             font-weight: 800;
             text-transform: uppercase;
             text-align: center;
@@ -185,9 +183,7 @@
         }
 
         /* ANIMATIONS */
-        .shaking {
-            animation: shake 0.6s ease-in-out infinite;
-        }
+        .shaking { animation: shake 0.6s ease-in-out infinite; }
 
         @keyframes shake {
             0% { transform: translate(2px, 2px) rotate(0deg); }
@@ -208,7 +204,6 @@
             100% { transform: scale(1) translateY(0); }
         }
 
-        /* Message Box */
         #msg-box {
             position: fixed;
             bottom: 30px;
@@ -219,6 +214,7 @@
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
+            z-index: 100;
         }
     </style>
 </head>
@@ -236,12 +232,9 @@
 
     <div class="ball-stage">
         <div class="eight-ball" id="ball" onclick="shakeBall()">
-            <!-- The iconic white circle with the 8 -->
             <div class="iconic-eight">
                 <span>W</span>
             </div>
-
-            <!-- The answer window -->
             <div class="answer-window">
                 <div class="triangle-container" id="triangle">
                     <div class="answer-text" id="answer"></div>
@@ -254,26 +247,21 @@
 
     <script>
         const responses = [
-    /* The "Yes" Vibes */
-    "Hailey<br>says YES",
-    "100%<br>Webster approved",
-    "Jaxon thinks<br>it's a go",
-    "Dallin is<br>on board",
-    "It is<br>decidedly so",
-    "Yes",
-
-    /* The "Humorous/Sassy" Vibes */
-    "Only<br> if you<br>pay Jaxon $5",
-    "If it's a<br>weekend, yes",
-    "In your<br>dreams, pal",
-
-    /* The "No/Doubtful" Vibes */
-    "Dallin says<br> no",
-    "No",
-    "Don't bet<br>on it",
-    "The W <br>stands<br>for Wrong",
-    "Prolly not",
-];
+            "Hailey<br>says YES",
+            "100%<br>Webster approved",
+            "Jaxon thinks<br>it's a go",
+            "Dallin is<br>on board",
+            "It is<br>decidedly so",
+            "Yes",
+            "Only<br> if you<br>pay Jaxon $5",
+            "If it's a<br>weekend, yes",
+            "In your<br>dreams, pal",
+            "Dallin says<br> no",
+            "No",
+            "Don't bet<br>on it",
+            "The W <br>stands<br>for Wrong",
+            "Prolly not",
+        ];
 
         let isShaking = false;
 
@@ -298,7 +286,6 @@
             }
 
             isShaking = true;
-            
             triangle.classList.remove('reveal');
             ball.classList.add('shaking');
             input.value = "";
