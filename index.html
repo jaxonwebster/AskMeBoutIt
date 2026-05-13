@@ -78,11 +78,10 @@
 
         button:hover { background-color: #2563eb; transform: translateY(-1px); }
 
-        /* THE BALL STAGE - Adjusted for better mobile fit */
         .ball-stage {
             position: relative;
             width: 100%;
-            max-width: 360px; /* Slightly narrower stage */
+            max-width: 360px;
             aspect-ratio: 1 / 1;
             display: flex;
             align-items: center;
@@ -91,7 +90,7 @@
 
         .eight-ball {
             position: relative;
-            width: 80%; /* Reduced from 90% to prevent hitting screen edges */
+            width: 80%; 
             height: 80%;
             max-width: 380px;
             max-height: 380px;
@@ -144,15 +143,16 @@
             margin-top: 15%; 
         }
 
+        /* --- UPDATED TRIANGLE LOGIC --- */
         .triangle-container {
-            width: 75%;
-            height: 65%;
+            width: 85%; /* Slightly wider to maximize space */
+            height: 75%;
             background-color: var(--triangle-blue);
             clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
             display: flex;
-            align-items: flex-end;
+            align-items: center; /* Center vertically for better fit */
             justify-content: center;
-            padding-bottom: 15%;
+            padding-top: 15%; /* Push text down away from the top point */
             box-sizing: border-box;
             opacity: 0;
             filter: blur(8px);
@@ -160,16 +160,18 @@
         }
 
         .answer-text {
-            width: 70%;
+            width: 65%; /* Constrain width to keep text in the 'fat' part of triangle */
             color: rgba(255,255,255,0.85);
-            font-size: clamp(10px, 3vw, 13px);
+            font-size: clamp(9px, 2.8vw, 12px); /* Slightly smaller base font */
             font-weight: 800;
             text-transform: uppercase;
             text-align: center;
-            line-height: 1.2;
+            line-height: 1.1; /* Tighter lines prevent vertical spill */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
+        /* ------------------------------ */
 
-        /* ANIMATIONS */
         .shaking { animation: shake 0.6s ease-in-out infinite; }
 
         @keyframes shake {
@@ -235,15 +237,15 @@
     <script>
         const responses = [
             "Hailey<br>says YES",
-            "100%<br>Webster approved",
+            "100%<br>Approved", // Shortened for fit
             "Jaxon thinks<br>it's a go",
             "Dallin is<br>on board",
             "It is<br>decidedly so",
             "Yes",
-            "Only<br> if you<br>pay Jaxon $5",
+            "Only if<br>you pay<br>Jaxon $5",
             "If it's a<br>weekend, yes",
-            "In your<br>dreams, pal",
-            "Dallin says<br> no",
+            "In your<br>dreams", // Shortened for fit
+            "Dallin<br>says no",
             "No",
             "Don't bet<br>on it",
             "The W <br>stands<br>for Wrong",
