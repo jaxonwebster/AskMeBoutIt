@@ -2,7 +2,9 @@
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=googlechrome&logoColor=white)](https://jaxonwebster.github.io/WebstersWiseBall/)
 
-Webster's Wise-Ball is a digital twist on the classic Magic 8-Ball. Built with a focus on smooth UI transitions and randomized logic, it provides "expert" mystical advice to users' most pressing questions. Mostly, this is a fun way for my family to make trivial decisions! The output of the ball is currently configured to display family inside jokes, and reference the names of some of the members of our family. The whole family loves to use this site!
+Webster's Wise-Ball is a digital twist on the classic Magic 8-Ball. Built with a focus on smooth UI transitions and randomized logic, it provides "expert" mystical advice to users' most pressing questions.
+
+Mostly, this is a fun way for my family to make trivial decisions! The output of the ball is currently configured to display family inside jokes, and reference the names of some of the members of our family. The whole family loves to use this site!
 
 ---
 
