@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webster's Wise Ball</title>
+    <title>Webster's Wise-Ball</title>
     <style>
         :root {
             --bg-color: #2c2c2e;
@@ -25,6 +25,7 @@
             justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
+            padding: 20px 0;
         }
 
         .header {
@@ -65,6 +66,11 @@
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
 
+        input[type="text"]:focus {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--triangle-blue);
+        }
+
         button {
             padding: 14px 28px;
             border-radius: 30px;
@@ -77,6 +83,12 @@
         }
 
         button:hover { background-color: #2563eb; transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+
+        #resetBtn {
+            background: #475569;
+        }
+        #resetBtn:hover { background-color: #334155; }
 
         .ball-stage {
             position: relative;
@@ -143,16 +155,15 @@
             margin-top: 15%; 
         }
 
-        /* --- UPDATED TRIANGLE LOGIC --- */
         .triangle-container {
-            width: 85%; /* Slightly wider to maximize space */
+            width: 85%;
             height: 75%;
             background-color: var(--triangle-blue);
             clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
             display: flex;
-            align-items: center; /* Center vertically for better fit */
+            align-items: center;
             justify-content: center;
-            padding-top: 15%; /* Push text down away from the top point */
+            padding-top: 15%;
             box-sizing: border-box;
             opacity: 0;
             filter: blur(8px);
@@ -160,20 +171,18 @@
         }
 
         .answer-text {
-            width: 65%; /* Constrain width to keep text in the 'fat' part of triangle */
+            width: 65%;
             color: rgba(255,255,255,0.85);
-            font-size: clamp(9px, 2.8vw, 12px); /* Slightly smaller base font */
+            font-size: clamp(9px, 2.8vw, 12px);
             font-weight: 800;
             text-transform: uppercase;
             text-align: center;
-            line-height: 1.1; /* Tighter lines prevent vertical spill */
+            line-height: 1.1;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
-        /* ------------------------------ */
 
         .shaking { animation: shake 0.6s ease-in-out infinite; }
-
         @keyframes shake {
             0% { transform: translate(2px, 2px) rotate(0deg); }
             25% { transform: translate(-3px, -1px) rotate(-2deg); }
@@ -187,7 +196,6 @@
             filter: blur(0) !important;
             animation: floatUp 2s forwards ease-out;
         }
-
         @keyframes floatUp {
             0% { transform: scale(0.85) translateY(15px); }
             100% { transform: scale(1) translateY(0); }
@@ -216,7 +224,8 @@
 
     <div class="controls">
         <input type="text" id="questionInput" placeholder="Ask a question..." maxlength="100">
-        <button onclick="shakeBall()">What say Webster?</button>
+        <button id="askBtn" onclick="shakeBall()">What say Webster?</button>
+        <button id="resetBtn" onclick="resetPage()" style="display: none;">Ask a New Question</button>
     </div>
 
     <div class="ball-stage">
@@ -236,20 +245,10 @@
 
     <script>
         const responses = [
-            "Hailey<br>says YES",
-            "100%<br>Approved", // Shortened for fit
-            "Jaxon thinks<br>it's a go",
-            "Dallin is<br>on board",
-            "It is<br>decidedly so",
-            "Yes",
-            "Only if<br>you pay<br>Jaxon $5",
-            "If it's a<br>weekend, yes",
-            "In your<br>dreams", // Shortened for fit
-            "Dallin<br>says no",
-            "No",
-            "Don't bet<br>on it",
-            "The W <br>stands<br>for Wrong",
-            "Prolly<br>not",
+            "Hailey<br>says YES", "100%<br>Approved", "Jaxon thinks<br>it's a go",
+            "Dallin is<br>on board", "It is<br>decidedly so", "Yes",
+            "Only if<br>you pay<br>Jaxon $5", "If it's a<br>weekend, yes", "In your<br>dreams",
+            "Dallin<br>says no", "No", "Don't bet<br>on it", "The W <br>stands<br>for Wrong", "Prolly<br>not"
         ];
 
         let isShaking = false;
@@ -258,7 +257,7 @@
             const box = document.getElementById('msg-box');
             box.innerText = text;
             box.style.opacity = '1';
-            setTimeout(() => box.style.opacity = '0', 3000);
+            setTimeout(() => box.style.opacity = '0', 2000);
         }
 
         function shakeBall() {
@@ -267,16 +266,19 @@
             const ball = document.getElementById('ball');
             const triangle = document.getElementById('triangle');
             const answer = document.getElementById('answer');
+            const askBtn = document.getElementById('askBtn');
 
-            if (!input.value.trim()) {
+            const question = input.value.trim();
+            if (!question) {
                 showMessage("Ask a question first!");
                 return;
             }
 
             isShaking = true;
+            
+            // UI Reset for shake
             triangle.classList.remove('reveal');
             ball.classList.add('shaking');
-            input.value = "";
 
             setTimeout(() => {
                 ball.classList.remove('shaking');
@@ -285,13 +287,38 @@
                 setTimeout(() => {
                     triangle.classList.add('reveal');
                     isShaking = false;
+                    
+                    // Show reset button and hide ask button
+                    document.getElementById('resetBtn').style.display = 'inline-block';
+                    askBtn.style.display = 'none';
+                    input.readOnly = true; 
                 }, 100);
             }, 1000);
         }
 
-        document.getElementById('questionInput').addEventListener('keypress', function (e) {
+        function resetPage() {
+            const input = document.getElementById('questionInput');
+            const triangle = document.getElementById('triangle');
+            const askBtn = document.getElementById('askBtn');
+            const resetBtn = document.getElementById('resetBtn');
+
+            // Clear input and ball
+            input.value = "";
+            input.readOnly = false;
+            triangle.classList.remove('reveal');
+            
+            // Swap buttons back
+            askBtn.style.display = 'inline-block';
+            resetBtn.style.display = 'none';
+            
+            input.focus();
+        }
+
+        document.getElementById('questionInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                shakeBall();
+                if (document.getElementById('askBtn').style.display !== 'none') {
+                    shakeBall();
+                }
             }
         });
     </script>
